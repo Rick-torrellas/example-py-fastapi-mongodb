@@ -1,0 +1,34 @@
+@url = http://localhost:8000
+@users = {{url}}/users
+### Get All
+Get {{users}}
+
+### Get One
+# @prompt id
+GET {{users}}/{{id}}
+
+### Crear usuario
+POST {{users}}
+Content-Type: application/json
+
+{
+  "id": "string",
+  "name": "string",
+  "email": "string",
+  "password": "string"
+}
+
+### Delete user
+# @prompt id
+DELETE {{users}}/{{id}}
+
+### Edit One
+# @prompt id
+PUT {{users}}/{{id}}
+Content-Type: application/json
+
+{
+  "name": "TEST:baby",
+  "email": "Olis",
+  "password": "paco"
+}

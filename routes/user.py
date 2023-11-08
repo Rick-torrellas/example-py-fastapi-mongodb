@@ -4,16 +4,16 @@ from schemas.user import userEntity,usersEntity
 from models.user import User
 from passlib.hash import sha256_crypt
 from bson import ObjectId
-from starlette.status import HTTP_204_NO_CONTENT
+from starlette.status import HTTP_204_NO_CONTENT,HTTP_201_CREATED,HTTP_200_OK
 
 database = conection.local.user
 user = APIRouter()
-@user.get('/users')
-def find_all_users():
+@user.get('/users', response_model=list[User], response_description="Agarra a todos los usuarios",description="Agarra a todos los usuarios",status_code=HTTP_200_OK)
+async def find_all_users():
     return usersEntity(database.find())
 
 @user.post('/users', response_model=User)
-def create_user(user: User):
+async def create_user(user: User):
     new_user = dict(user)
     new_user["password"] = sha256_crypt.encrypt(new_user["password"])
     del new_user["id"]
@@ -22,7 +22,7 @@ def create_user(user: User):
     return userEntity(user)
 
 @user.get('/users/{id}')
-def find_user(id: str):
+async def find_user(id: str):
         return userEntity(database.find_one({"_id": ObjectId(id)}))
 
 @user.put("/users/{id}")
@@ -39,6 +39,6 @@ async def update_user(id: str, user: User):
     return userEntity(database.find_one({"_id": ObjectId(id)}))
 
 @user.delete('/users/{id}', status_code=status.HTTP_204_NO_CONTENT, tags=["users"])
-def delete_user(id: str):
+async def delete_user(id: str):
      database.find_one_and_delete({"_id": ObjectId(id)})
      return Response(status_code=HTTP_204_NO_CONTENT)
